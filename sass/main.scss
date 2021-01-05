@@ -14,6 +14,12 @@ $color-primary-dark: #28b485;
 $color-grey-dark: #777;
 $color-white: #fff;
 
+$header-height:95vh;
+$block-disp:block;
+$absolute-pos:absolute;
+$fourty-px:40px;
+
+
 @keyframes moveInLeft {
     0%{
         opacity: 0;
@@ -61,8 +67,7 @@ $color-white: #fff;
     padding: 0;
     box-sizing: border-box;
 }
-
-body {
+@mixin font-param{
     font-family: 'Lato', sans-serif;
     font-weight: 400;
     font-size: 16px;
@@ -70,9 +75,10 @@ body {
     color: #777;
     padding: 30px;
 }
-
-.header {
-    height: 95vh;
+body {
+   @include font-param; 
+}
+@mixin background-header{
     background-image: linear-gradient(to right bottom, rgba($color-primary-light, 0.8), rgba($color-primary-dark, 0.8)), url(../img//hero.jpg);
     background-size: cover;
     background-position: top;
@@ -80,104 +86,167 @@ body {
     /* clip-path: polygon(x y, x y, x y, x y); */
     clip-path: polygon(0 0, 100% 0, 100% 75vh, 0% 100%);
 }
+.header {
+    height: $header-height;
+    @include background-header;
+    
 
-.header__logo-box {
-    position: absolute;
-    top: 40px;
-    left: 40px;
+    .header__logo-box {
+        position: $absolute-pos;
+        top: $fourty-px;
+        left: $fourty-px;
+
+        .header__logo {
+            height: $fourty-px;
+        }
+    }
+%animation-transition{
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
 }
 
-.header__logo {
-    height: 40px;
+@mixin heading-main{
+    font-size: 60px;
+    font-weight: 400;
+    letter-spacing: 35px;
+
 }
 
-.header__text-box {
-    position: absolute;
+@mixin header-txt-div{
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
 
-.heading-primary{
-    color: #fff;
+@mixin heading-primary-txt{
     text-transform: uppercase;
-    margin-bottom: 60px;
+            margin-bottom: 60px;
 }
 
-.heading-primary--main{
-    display: block;
-    font-size: 60px;
-    font-weight: 400;
-    letter-spacing: 35px;
-
-    animation-name: moveInLeft;
-    animation-duration: 1s;
-    animation-timing-function: ease-out;
-}
-
-.heading-primary--sub{
-    display: block;
+@mixin heading-sub{
     font-size: 20px;
     font-weight: 700;
     letter-spacing: 17px;
-
-    animation-name: moveInRight;
-    animation-duration: 1s;
-    animation-timing-function: ease-out;
 }
 
 
-.btn,
-.btn:visited {
+%button{
     text-transform: uppercase;
-    text-decoration: none;
-    padding: 15px 40px;
-    display: inline-block;
-    border-radius: 100px;
-    transition: all .2s;
-    position: relative;
+        text-decoration: none;
+        padding: 15px 40px;
+        display: inline-block;
+        border-radius: 100px;
+        transition: all .2s;
+        position: relative;
 }
 
-.btn:hover{
+@mixin translate-hover{
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0,0,0,.2);
 }
 
-.btn:active{
+@mixin translate-active{
     transform: translateY(-1px);
     box-shadow: 0 5px 10px rgba(0,0,0,.2);
 }
 
-.btn--white{
-    background-color: #fff;
-    color: #777;
+@mixin btn-after{
+                content: "";
+                display: inline-block;
+                height: 100%;
+                width: 100%;
+                border-radius: 100px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: -1;
+                transition: all .4s;
 }
 
-.btn::after {
-    content: "";
-    display: inline-block;
-    height: 100%;
-    width: 100%;
-    border-radius: 100px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    transition: all .4s;
-}
-
-.btn--white::after{
-    background-color: #fff;
-}
-
-.btn:hover::after{
+@mixin btn-hover-after{
     transform: scaleX(1.4) scaleY(1.6);
     opacity: 0;
 }
 
-.btn--animated {
+@mixin btn-animation{
     animation: moveInBottom .5s ease-out .75s;
     animation-fill-mode: backwards;
 }
+
+    .header__text-box {
+        position: $absolute-pos;
+        @include header-txt-div;
+        @include heading-primary-txt;
+        
+        .heading-primary{
+            color:$color-white;
+            
+
+            .heading-primary--main{
+                display: $block-disp;
+                @include heading-main;
+                animation-name: moveInLeft;
+                @extend %animation-transition;
+            }
+
+
+            .heading-primary--sub{
+                display: $block-disp;
+                @include heading-sub;
+            
+                animation-name: moveInRight;
+                @extend %animation-transition;
+            }
+        }
+
+
+        .btn{
+            @extend %button;
+            
+            &:visited {
+                @extend %button;
+            }
+        
+            &:hover{
+                @include translate-hover;
+            }
+        
+            &:active{
+                @include translate-hover;
+            }
+
+            &::after {
+              @include btn-after;  
+            }
+
+            &:hover::after{
+                @include btn-hover-after;
+            }
+        }
+
+        .btn--white{
+            background-color: $color-white;
+            color: $color-grey-dark;
+        
+            &::after{
+                background-color: $color-white;
+            }
+        }
+        
+        
+        .btn--animated {
+            @include btn-animation;
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
 
